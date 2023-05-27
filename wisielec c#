@@ -1,0 +1,114 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<string> words = new List<string>() { "programowanie", "komputer", "programista", "algorytm", "struktura", "zmienna" };
+            string secretWord = getSecretWord(words);
+            string maskedWord = maskWord(secretWord);
+            int attempts = 6;
+
+            Console.WriteLine("Witaj w grze Wisielec!");
+            Console.WriteLine("Odgadnij ukryte słowo. Masz " + attempts + " prób.");
+
+            while (attempts > 0)
+            {
+                Console.WriteLine("Aktualne słowo: ");
+                displayWord(maskedWord);
+
+                char guess;
+                Console.WriteLine("Podaj literę: ");
+                guess = Convert.ToChar(Console.ReadLine());
+
+                if (isGuessCorrect(secretWord, guess))
+                {
+                    Console.WriteLine("Brawo! Zgadłeś literę.");
+                    updateWord(secretWord, maskedWord, guess);
+
+                    if (isWordGuessed(maskedWord))
+                    {
+                        Console.WriteLine("Gratulacje! Wygrałeś!");
+                        return;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Nieprawidłowa litera. Straciłeś jedną próbę.");
+                    --attempts;
+                }
+
+                Console.WriteLine("Pozostałe próby: " + attempts);
+            }
+
+            Console.WriteLine("Przegrałeś! Ukryte słowo to: " + secretWord);
+        }
+
+        static string getSecretWord(List<string> words)
+        {
+            Random rnd = new Random();
+            int randomIndex = rnd.Next(0, words.Count);
+            return words[randomIndex];
+        }
+
+        static string maskWord(string word)
+        {
+            string masked = word;
+            for (int i = 0; i < masked.Length; i++)
+            {
+                masked[i] = '_';
+            }
+            return masked;
+        }
+
+        static void displayWord(string word)
+        {
+            for (int i = 0; i < word.Length; i++)
+            {
+                Console.Write(word[i] + " ");
+            }
+            Console.WriteLine();
+        }
+
+        static bool isGuessCorrect(string word, char guess)
+        {
+            for (int i = 0; i < word.Length; i++)
+            {
+                if (word[i] == guess)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static void updateWord(string secretWord, string maskedWord, char guess)
+        {
+            for (int i = 0; i < secretWord.Length; i++)
+            {
+                if (secretWord[i] == guess)
+                {
+                    maskedWord[i] = guess;
+                }
+            }
+        }
+
+        static bool isWordGuessed(string word)
+        {
+            for (int i = 0; i < word.Length; i++)
+            {
+                if (word[i] == '_')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+}
